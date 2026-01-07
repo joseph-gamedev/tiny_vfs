@@ -2,19 +2,13 @@
 
 Tiny, header-only virtual filesystem for games and rendering.
 
-Features
-- Mount multiple backends under a single virtual path tree.
-- Overlay behavior: the most recent mount wins for reads/writes.
-- Small, modern C++17 API with a simple blob type and callbacks.
-- Disk backend included; custom backends can be implemented via `tinyvfs::Backend`.
-
-Quick start
+Usage (quick start)
 ```cpp
 #include "tiny_vfs.h"
 
 int main() {
     tinyvfs::Vfs vfs;
-    vfs.mount_disk("assets", "data/assets");
+    vfs.mount_disk("assets", "data/assets"); // base content
 
     auto text = vfs.read_text("assets/hello.txt");
     if (text) {
@@ -22,6 +16,28 @@ int main() {
     }
 }
 ```
+
+Use cases
+- Modding and overrides: mount a mod folder last to replace base assets without code changes.
+- Patching/hotfixes: mount a small patch folder after base content.
+- DLC/optional packs: mount extra content under a separate virtual root.
+- Testing: mount a test data folder last to inject fixtures.
+
+Example: patch + mod overlay
+```cpp
+tinyvfs::Vfs vfs;
+vfs.mount_disk("assets", "C:/Game/Content");            // base
+vfs.mount_disk("assets", "C:/Game/Patches/1.0.1");      // hotfix
+vfs.mount_disk("assets", "C:/Users/Alice/Mods/CoolMod"); // mod
+
+auto mat = vfs.read_text("assets/materials/metal.json"); // mod wins if present
+```
+
+Features
+- Mount multiple backends under a single virtual path tree.
+- Overlay behavior: the most recent mount wins for reads/writes.
+- Small, modern C++17 API with a simple blob type and callbacks.
+- Disk backend included; custom backends can be implemented via `tinyvfs::Backend`.
 
 Build and test (MSVC via CMake)
 ```bat
