@@ -90,6 +90,14 @@ Features
 - Small, modern C++17 API with a simple blob type and callbacks.
 - Disk backend included; custom backends can be implemented via `tinyvfs::Backend`.
 
+TODO for full archive/pack VFS parity
+- Add archive backends and mount-from-archive support (zip/pak/pk3/wad/7z).
+- Add streaming file handles with seek/tell/size/eof and partial reads/writes.
+- Add write directory support (set write dir, mkdir/delete, append) and search-path priority control.
+- Add file metadata/stat (type, size, mod time) plus case-sensitivity and symlink policy toggles.
+- Add platform helpers for user/pref directories and real-path resolution.
+- Add recursive enumeration with optional pattern/glob filters.
+
 Build and test (MSVC via CMake)
 ```bat
 build_and_test.bat
