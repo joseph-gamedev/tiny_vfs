@@ -1,0 +1,2 @@
+Hello from tiny_vfs!
+This file is loaded by examples/example_vfs.cpp.
