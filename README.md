@@ -33,6 +33,57 @@ vfs.mount_disk("assets", "C:/Users/Alice/Mods/CoolMod"); // mod
 auto mat = vfs.read_text("assets/materials/metal.json"); // mod wins if present
 ```
 
+End-user API (most useful calls)
+
+Mounting
+- `mount_disk(virtual_root, disk_path)` mounts a folder under a virtual root.
+- `unmount(virtual_root)` removes a mount.
+
+```cpp
+tinyvfs::Vfs vfs;
+vfs.mount_disk("assets", "data/assets");
+vfs.unmount("assets");
+```
+
+Loading files
+- `read_text(path)` loads a text file into `std::string`.
+- `read_file(path)` loads binary data into `tinyvfs::Blob`.
+
+```cpp
+auto text = vfs.read_text("assets/shaders/basic.hlsl");
+if (text) {
+    compile_shader(*text);
+}
+
+auto blob = vfs.read_file("assets/textures/albedo.dds");
+if (blob) {
+    upload_texture(blob->data(), blob->size());
+}
+```
+
+Existence checks
+- `exists_file(path)` and `exists_dir(path)` for quick checks.
+
+```cpp
+if (!vfs.exists_file("assets/config/game.json")) {
+    // fallback to defaults
+}
+```
+
+Enumerating
+- `list_files(path, extensions, callback)` lists files (non-recursive).
+- `list_dirs(path, callback)` lists directories and mounted subfolders.
+
+```cpp
+vfs.list_files("assets", {"png", "dds"}, [&](std::string_view name) {
+    register_texture(name);
+});
+
+vfs.list_dirs("assets", [&](std::string_view name) {
+    scan_folder(name);
+});
+```
+
 Features
 - Mount multiple backends under a single virtual path tree.
 - Overlay behavior: the most recent mount wins for reads/writes.
